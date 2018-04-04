@@ -57,6 +57,7 @@ nav {
 }
 nav h1 {
   margin: auto;
+  line-height: 80px;
 }
 nav h1 a {
   color: #fff;
@@ -111,10 +112,12 @@ nav h1 a {
   align-items: center;
 }
 .filter-options h2 {
+  display: inline-block;
+  float: left;
+  line-height: 50px;
   color: white;
-  font-size: 1rem;
+  font-size: 0.8rem;
   font-weight: normal;
-  line-height: 1;
   margin: 0 20px;
 }
 .filter-options select {
@@ -122,11 +125,12 @@ nav h1 a {
   border: 1px solid #fff;
   font-family: Arial,sans-serif;
   font-size: 11pt;
-  height: 35px;
+  height: 32px;
   letter-spacing: 0;
   margin: 10px;
   padding: 0 10px;
-  width: 200px;
+  width: 25%;
+  float: right;
 }
 
 /* ====================== Restaurant Listing ====================== */
@@ -138,14 +142,20 @@ nav h1 a {
   text-align: center;
 }
 #restaurants-list li {
+  font-family: Arial,sans-serif;
+  margin: 0 0 15px 0;
+  min-height: 380px;
+  width: 100%;
+}
+#restaurants-list .restaurant-holder {
+  padding: 0 10px;
+}
+#restaurants-list .restaurant-inner {
+  text-align: left;
   background-color: #fff;
   border: 2px solid #ccc;
-  font-family: Arial,sans-serif;
-  margin: 15px;
-  min-height: 380px;
   padding: 0 30px 25px;
-  text-align: left;
-  width: 270px;
+
 }
 #restaurants-list .restaurant-img {
   background-color: #ccc;
@@ -272,4 +282,49 @@ nav h1 a {
 }
 #restaurant-hours td {
   color: #666;
+}
+
+/* ====================== Responsive ====================== */
+@media all and (min-width: 480px) { /* S */
+  /*#maincontent {
+    max-width: 460px;
+    margin: 0 auto;
+  }*/
+  .filter-options h2 {
+    font-size: 0.8rem;
+  }
+  .filter-options select {
+    width: 33.33%;
+  }
+}
+@media all and (min-width: 768px) { /* M */
+  .filter-options h2 {
+    display: inline-block;
+    float: left;
+    line-height: 50px;
+    font-size: 1rem;
+  }
+  .filter-options select {
+    float: right;
+  }
+  #restaurants-list {
+    display: inline-block;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  #restaurants-list li {
+    display: inline-block;
+    width: 50%;
+    float: left;
+  }
+}
+@media all and (min-width: 1024px) { /* L */
+  #restaurants-list li {
+    width: 33.33%;
+  }
+}
+@media all and (min-width: 1200px) { /* XL */
+  #restaurants-list li {
+    width: 25%;
+  }
 }
