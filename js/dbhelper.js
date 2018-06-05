@@ -37,6 +37,9 @@ class DBHelper {
                     idbKeyval.clear();
                     for (const restaurant of restaurants) {
                         idbKeyval.set(restaurant.id, restaurant);
+                        if (typeof restaurant.photograph !== 'undefined') {
+                            fetch(`/img/${restaurant.photograph}.webp`);
+                        }
                     }
                     callback(null, restaurants);
                 } else { // Oops!. Got an error from server.
@@ -170,7 +173,11 @@ class DBHelper {
    * Restaurant image URL.
    */
   static imageUrlForRestaurant(restaurant) {
-    return (`/img/${restaurant.photograph}.webp`);
+    if (typeof restaurant.photograph !== 'undefined') {
+        return (`/img/${restaurant.photograph}.webp`);
+    } else {
+        return ('/img/img-placeholder.svg');
+    }
   }
 
   /**
