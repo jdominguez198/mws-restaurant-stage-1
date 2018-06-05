@@ -9,6 +9,7 @@ if ( 'serviceWorker' in navigator ) {
             .register('/sw.js')
             .then(function(registration) {
                 console.log('Service Worker registration successful with scope: ', registration.scope);
+                new LazyLoad();
             })
             .catch(function (err) {
                 console.log('Service Worker Failed to Register', err);
@@ -74,6 +75,8 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   image.className = 'restaurant-img';
   image.setAttribute('alt', 'Restaurant ' + restaurant.name);
   image.setAttribute('title', 'Restaurant ' + restaurant.name);
+  image.setAttribute('data-src', image.src);
+  image.setAttribute('data-idx', restaurant.id);
   image.src = DBHelper.imageUrlForRestaurant(restaurant);
 
   const cuisine = document.getElementById('restaurant-cuisine');

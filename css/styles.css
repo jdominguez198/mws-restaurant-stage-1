@@ -132,6 +132,9 @@ nav h1 a {
   width: 25%;
   float: right;
 }
+.filter-options label {
+  display: none;
+}
 
 /* ====================== Restaurant Listing ====================== */
 #restaurants-list {

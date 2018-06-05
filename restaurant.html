@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
   <!-- Normalize.css for better cross-browser consistency -->
@@ -7,6 +7,24 @@
   <!-- Main CSS file -->
   <link rel="stylesheet" href="css/styles.css" type="text/css">
   <title>Restaurant Info</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="RestApp">
+  <link rel="apple-touch-icon" href="/img/icons/app-icon-57x57.png" sizes="57x57">
+  <link rel="apple-touch-icon" href="/img/icons/app-icon-60x60.png" sizes="60x60">
+  <link rel="apple-touch-icon" href="/img/icons/app-icon-72x72.png" sizes="72x72">
+  <link rel="apple-touch-icon" href="/img/icons/app-icon-76x76.png" sizes="76x76">
+  <link rel="apple-touch-icon" href="/img/icons/app-icon-114x114.png" sizes="114x114">
+  <link rel="apple-touch-icon" href="/img/icons/app-icon-120x120.png" sizes="120x120">
+  <link rel="apple-touch-icon" href="/img/icons/app-icon-144x144.png" sizes="144x144">
+  <link rel="apple-touch-icon" href="/img/icons/app-icon-152x152.png" sizes="152x152">
+  <link rel="apple-touch-icon" href="/img/icons/app-icon-180x180.png" sizes="180x180">
+  <meta name="msapplication-TileImage" content="/img/icons/app-icon-144x144.png">
+  <meta name="msapplication-TileColor" content="#fff">
+  <meta name="theme-color" content="#252831">
 </head>
 
 <body class="inside">
@@ -60,16 +78,19 @@
   <!-- End footer -->
 
   <!-- Beginning scripts -->
-  <!-- Database helpers -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-lazyload/8.7.1/lazyload.min.js"></script>
   <script type="application/javascript" charset="utf-8" src="js/idb/idb.js"></script>
   <script type="application/javascript" charset="utf-8" src="js/idbhelper.js"></script>
 
+  <!-- Database helpers -->
   <script type="text/javascript" src="js/dbhelper.js"></script>
   <!-- Main javascript file -->
   <script type="text/javascript" src="js/restaurant_info.js"></script>
   <!-- Google Maps -->
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD0_isyJ0lKYeI4467C_TE5ePjG0roTrIg&libraries=places&callback=initMap"></script>
   <!-- End scripts -->
+
+  <noscript>This website works with JavaScript</noscript>
 
 </body>
 

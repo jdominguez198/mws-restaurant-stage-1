@@ -6,6 +6,7 @@ const STATIC_URLS = [
     '/',
     'index.html',
     'restaurant.html',
+    'manifest.json',
     'css/styles.css',
     'js/main.js',
     'js/idb/idb.js',
@@ -44,6 +45,7 @@ self.addEventListener('fetch', event => {
     // Skip cross-origin requests, like those for Google Analytics.
     if (event.request.url.startsWith(self.location.origin) ||
             event.request.url.endsWith('/restaurants') ||
+            event.request.url.includes('cdnjs.cloudflare.com') ||
             event.request.url.includes('maps.googleapis.com') ||
             event.request.url.includes('maps.gstatic.com')) {
         event.respondWith(
