@@ -8,6 +8,8 @@ const STATIC_URLS = [
     'restaurant.html',
     'css/styles.css',
     'js/main.js',
+    'js/idb/idb.js',
+    'js/idbhelper.js',
     'js/dbhelper.js',
     'js/restaurant_info.js'
 ];
@@ -28,7 +30,6 @@ self.addEventListener('activate', event => {
         caches.keys().then(cacheNames => {
             return cacheNames.filter(cacheName => !currentCaches.includes(cacheName));
         }).then(cachesToDelete => {
-            console.log(cachesToDelete);
             return Promise.all(cachesToDelete.map(cacheToDelete => {
                 return caches.delete(cacheToDelete);
             }));
@@ -41,7 +42,10 @@ self.addEventListener('activate', event => {
 // from the network before returning it to the page.
 self.addEventListener('fetch', event => {
     // Skip cross-origin requests, like those for Google Analytics.
-    if (event.request.url.startsWith(self.location.origin)) {
+    if (event.request.url.startsWith(self.location.origin) ||
+            event.request.url.endsWith('/restaurants') ||
+            event.request.url.includes('maps.googleapis.com') ||
+            event.request.url.includes('maps.gstatic.com')) {
         event.respondWith(
             caches.match(event.request).then(cachedResponse => {
                 if (cachedResponse) {
