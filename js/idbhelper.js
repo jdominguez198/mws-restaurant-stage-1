@@ -5,7 +5,7 @@ const dbPromise = idb.open(_store, 1, upgradeDB => {
     upgradeDB.createObjectStore(_collection);
 });
 
-const idbKeyval = {
+window.idbKeyval = {
     get(key) {
         return dbPromise.then(db => {
             return db.transaction(_collection)

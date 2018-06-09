@@ -4,22 +4,6 @@ let restaurants,
 var map;
 var markers = [];
 
-// Load service worker
-if ( 'serviceWorker' in navigator ) {
-    window.addEventListener('load', function() {
-        navigator
-            .serviceWorker
-            .register('/sw.js', { scope: '/' })
-            .then(function(registration) {
-                console.log('Service Worker registration successful with scope: ', registration.scope);
-                new LazyLoad();
-            })
-            .catch(function (err) {
-                console.log('Service Worker Failed to Register', err);
-            });
-    });
-}
-
 /**
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
  */

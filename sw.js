@@ -10,6 +10,7 @@ const STATIC_URLS = [
     'manifest.json',
     'img/img-placeholder.svg',
     'css/styles.css',
+    'js/loader.js',
     'js/main.js',
     'js/idb/idb.js',
     'js/idbhelper.js',

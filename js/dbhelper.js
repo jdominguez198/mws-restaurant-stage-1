@@ -20,7 +20,7 @@ class DBHelper {
     // We have to check if we did a previous fetch will the data
     // and if so, do not fetch from network and provide the saved ones
 
-    idbKeyval.getAll().then(function(_restaurantsFromStorage) {
+    window.idbKeyval.getAll().then(function(_restaurantsFromStorage) {
         if (_restaurantsFromStorage.length && _restaurantsFromStorage.length > 0) {
 
             console.log('Retrieving restaurants from indexedDB');
@@ -34,9 +34,9 @@ class DBHelper {
             xhr.onload = () => {
                 if (xhr.status === 200) { // Got a success response from server!
                     const restaurants = JSON.parse(xhr.responseText);
-                    idbKeyval.clear();
+                    window.idbKeyval.clear();
                     for (const restaurant of restaurants) {
-                        idbKeyval.set(restaurant.id, restaurant);
+                        window.idbKeyval.set(restaurant.id, restaurant);
                         if (typeof restaurant.photograph !== 'undefined') {
                             fetch(`/img/${restaurant.photograph}.webp`);
                         }
