@@ -7,9 +7,17 @@ class DBHelper {
    * Database URL.
    * Change this to restaurants.json file location on your server.
    */
-  static get DATABASE_URL() {
+  static get API_URL() {
     const port = 1337; // Change this to your server port
-    return `http://localhost:${port}/restaurants`;
+    return `http://localhost:${port}/`;
+  }
+
+  static get API_RESTAURANTS_URL() {
+    return DBHelper.API_URL + 'restaurants/';
+  }
+
+  static get API_REVIEWS_URL() {
+      return DBHelper.API_URL + 'reviews/';
   }
 
   /**
@@ -30,18 +38,46 @@ class DBHelper {
 
             console.log('Retrieving restaurants from network');
             let xhr = new XMLHttpRequest();
-            xhr.open('GET', DBHelper.DATABASE_URL);
+            xhr.open('GET', DBHelper.API_RESTAURANTS_URL);
             xhr.onload = () => {
                 if (xhr.status === 200) { // Got a success response from server!
                     const restaurants = JSON.parse(xhr.responseText);
-                    window.idbKeyval.clear();
-                    for (const restaurant of restaurants) {
-                        window.idbKeyval.set(restaurant.id, restaurant);
-                        if (typeof restaurant.photograph !== 'undefined') {
-                            fetch(`/img/${restaurant.photograph}.webp`);
+
+                    let xhrReviews = new XMLHttpRequest();
+                    xhrReviews.open('GET', DBHelper.API_REVIEWS_URL);
+                    xhrReviews.onload = () => {
+
+                        const restaurantsMap = {};
+                        window.idbKeyval.clear();
+                        for (let i = 0; i < restaurants.length; i++) {
+                            const restaurant = restaurants[i];
+                            restaurantsMap[restaurant.id] = i;
+                            window.idbKeyval.set(restaurant.id, restaurant);
+                            if (typeof restaurant.photograph !== 'undefined') {
+                                fetch(`/img/${restaurant.photograph}.webp`);
+                            }
                         }
-                    }
-                    callback(null, restaurants);
+
+                        const reviews = JSON.parse(xhrReviews.responseText);
+                        if (reviews.length && reviews.length > 0) {
+                            for (const review of reviews) {
+
+                                if (!restaurants[restaurantsMap[review.restaurant_id]].reviews) {
+                                    restaurants[restaurantsMap[review.restaurant_id]].reviews = [];
+                                }
+
+                                restaurants[restaurantsMap[review.restaurant_id]].reviews.push(review);
+                                window.idbKeyval.set(review.restaurant_id, restaurants[restaurantsMap[review.restaurant_id]]);
+
+                            }
+                        }
+
+
+                        callback(null, restaurants);
+
+                    };
+                    xhrReviews.send();
+
                 } else { // Oops!. Got an error from server.
                     const error = (`Request failed. Returned status of ${xhr.status}`);
                     callback(error, null);
@@ -196,7 +232,7 @@ class DBHelper {
   static markRestaurantAsFavorite(restaurantID, isFavorite, callback) {
 
       let xhr = new XMLHttpRequest();
-      xhr.open('PUT', DBHelper.DATABASE_URL + '/' + restaurantID + '/?is_favorite=' + (isFavorite ? 'true' : 'false'));
+      xhr.open('PUT', DBHelper.API_RESTAURANTS_URL + restaurantID + '/?is_favorite=' + (isFavorite ? 'true' : 'false'));
       xhr.onload = () => {
           if (xhr.status === 200) { // Got a success response from server!
               window.idbKeyval.get(restaurantID).then((restaurant) => {
@@ -204,7 +240,6 @@ class DBHelper {
                   restaurant.is_favorite = "" + isFavorite; // set it as String
                   window.idbKeyval.set(restaurantID, restaurant);
               });
-
               callback(null, true);
           } else { // Oops!. Got an error from server.
               const error = (`Request failed. Returned status of ${xhr.status}`);
@@ -215,4 +250,38 @@ class DBHelper {
 
   }
 
+  static saveRestaurantReview(data, callback) {
+
+    let xhr = new XMLHttpRequest();
+      xhr.open('POST', DBHelper.API_REVIEWS_URL);
+      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+      xhr.onload = () => {
+          if (xhr.status === 201) {
+            const restaurantID = parseInt(data.restaurant_id);
+              window.idbKeyval.get(restaurantID).then((restaurant) => {
+                  if (!restaurant.reviews) {
+                    restaurant.reviews = [];
+                  }
+                  restaurant.reviews.push(JSON.parse(xhr.responseText));
+                  window.idbKeyval.set(restaurantID, restaurant);
+              });
+              callback(null, true);
+          } else { // Oops!. Got an error from server.
+              const error = (`Request failed. Returned status of ${xhr.status}`);
+              callback(error, null);
+          }
+      };
+      xhr.send(serialize(data));
+
+  }
+
 }
+
+const serialize = function(obj) {
+    const str = [];
+    for (let p in obj)
+        if (obj.hasOwnProperty(p)) {
+            str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+        }
+    return str.join("&");
+};

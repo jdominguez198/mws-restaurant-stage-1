@@ -34,7 +34,7 @@ window.initMap = () => {
       DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
     }
   });
-}
+};
 
 /**
  * Get current restaurant from page URL.
@@ -156,8 +156,9 @@ createReviewHTML = (review) => {
   name.className = 'name';
   divHeader.appendChild(name);
 
+  const reviewDate = new Date(review.updatedAt);
   const date = document.createElement('span');
-  date.innerHTML = review.date;
+  date.innerHTML = reviewDate.getFullYear() + "-" + (reviewDate.getMonth() + 1) + "-" + reviewDate.getDate();
   date.className = 'date';
   divHeader.appendChild(date);
 
@@ -227,3 +228,10 @@ toggleFavoriteRestaurant = (e) => {
     }
 
 };
+
+// Load when scripts is added
+(function() {
+
+  new ReviewModal(getParameterByName('id'));
+
+}());

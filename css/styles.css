@@ -61,7 +61,7 @@ nav h1 {
 }
 nav h1 a {
   color: #fff;
-  font-size: 14pt;
+  font-size: 10pt;
   font-weight: 200;
   letter-spacing: 10px;
   text-transform: uppercase;
@@ -182,7 +182,10 @@ nav h1 a {
   margin: 0;
   font-size: 11pt;
 }
-#restaurants-list li a {
+#restaurants-list li a,
+#reviews-add,
+#reviews-cancel,
+#reviews-save {
   background-color: orange;
   border-bottom: 3px solid #eee;
   color: #333;/*#fff;*/
@@ -194,6 +197,14 @@ nav h1 a {
   text-decoration: none;
   text-transform: uppercase;
 }
+#reviews-save[disabled] {
+  background-color: #ddd;
+}
+
+#reviews-add {
+  margin-left: 25px;
+  margin-bottom: 30px;
+}
 
 /* ====================== Restaurant Details ====================== */
 .inside header {
@@ -204,7 +215,7 @@ nav h1 a {
 }
 .inside #map-container {
   background: blue none repeat scroll 0 0;
-  position: fixed;
+  position: absolute;
   height: 170px;
   right: 0;
   left: 0;
@@ -223,8 +234,8 @@ nav h1 a {
   position: absolute;
 }
 #restaurant-name {
-  display: inline-block;
-  font-size: 18pt;
+  display: block;
+  font-size: 16pt;
   line-height: 60px;
   margin: 0;
   color: #f18200;
@@ -324,6 +335,68 @@ nav h1 a {
 }
 #restaurant-hours td {
   color: #666;
+}
+
+/* ====================== Add review modal ====================== */
+#review-add-modal {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  opacity: 0;
+  pointer-events: none;
+  -webkit-transition: opacity 0.4s;
+  -moz-transition: opacity 0.4s;
+  -ms-transition: opacity 0.4s;
+  -o-transition: opacity 0.4s;
+  transition: opacity 0.4s;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 999999;
+}
+#review-add-modal.open {
+  display: block;
+  opacity: 1;
+  pointer-events: initial;
+}
+#review-add-modal-holder {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: auto;
+  min-width: 280px;
+  padding: 20px 20px;
+  background: #fff;
+  -webkit-transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  -o-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+#review-add-modal .f-control {
+  display: block;
+  width: 100%;
+}
+#review-add-modal .f-control input,
+#review-add-modal .f-control select,
+#review-add-modal .f-control textarea {
+  display: block;
+  width: 100%;
+  height: 35px;
+  border: 1px solid #ccc;
+  margin: 0 0 20px 0;
+  padding: 0 5px;
+  background: #fff;
+  resize: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+#review-add-modal .f-control textarea {
+  height: 120px;
 }
 
 /* ====================== Icon favorite ====================== */

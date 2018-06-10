@@ -1,6 +1,22 @@
-window.addEventListener('load', function() {
+// Load async scripts on sucesive order
+const loadScript = function(arrPath, onComplete) {
 
-    console.log('loading...');
+    if (arrPath.length > 0) {
+        const script = document.createElement('script');
+        script.src = arrPath[0];
+        script.onload = function() {
+            arrPath.shift();
+            loadScript(arrPath, onComplete);
+        };
+        document.head.appendChild(script);
+    } else {
+        onComplete();
+    }
+
+};
+
+
+window.addEventListener('load', function() {
 
     const scriptsToLoad =  [
         'https://cdnjs.cloudflare.com/ajax/libs/vanilla-lazyload/8.7.1/lazyload.min.js',
@@ -13,31 +29,20 @@ window.addEventListener('load', function() {
     if (window.currentPage === 'index') {
         scriptsToLoad.push('/js/main.js');
     } else if (window.currentPage === 'restaurant') {
+        scriptsToLoad.push('/js/review_modal.js');
         scriptsToLoad.push('/js/restaurant_info.js');
     }
 
-    let i = 0;
-    scriptsToLoad.forEach(function(src) {
-        const script = document.createElement('script');
-        script.src = src;
-        script.onload = function() {
-            i++;
-            if (i === scriptsToLoad.length) {
+    loadScript(scriptsToLoad, function() {
 
-                window.initMap();
-                window.setTimeout(function() {
-                    const _iframes = document.getElementsByTagName('iframe');
-                    for (let i = 0; i < _iframes.length; i++) {
-                        _iframes[i].title = 'Google Map';
-                    }
-                    new LazyLoad();
-                }, 250);
-
-
+        window.initMap();
+        window.setTimeout(function() {
+            const _iframes = document.getElementsByTagName('iframe');
+            for (let i = 0; i < _iframes.length; i++) {
+                _iframes[i].title = 'Google Map';
             }
-        };
-        document.head.appendChild(script);
-        console.log('Loading: ' + src);
+            new LazyLoad();
+        }, 250);
 
     });
 

@@ -68,10 +68,38 @@
       <div class="reviews-container-box">
         <ul id="reviews-list"></ul>
       </div>
+      <a href="#" id="reviews-add">Add a review</a>
     </section>
     <!-- End reviews -->
   </main>
   <!-- End main -->
+
+  <div id="review-add-modal">
+    <div id="review-add-modal-holder">
+      <input type="hidden" name="restaurant_id" id="review-add-input-id">
+      <div class="f-control">
+        <label for="review-add-input-reviewer-name">Your name:</label>
+        <input type="text" name="reviewer_name" id="review-add-input-reviewer-name">
+      </div>
+      <div class="f-control">
+        <label for="review-add-input-rating">Your rating:</label>
+        <select name="rating" id="review-add-input-rating">
+          <option value="">Select a rating</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+        </select>
+      </div>
+      <div class="f-control">
+        <label for="review-add-input-comment-text">Your comments:</label>
+        <textarea name="comment_text" id="review-add-input-comment-text"></textarea>
+      </div>
+      <a href="#" id="reviews-save" disabled>Save</a>
+      <a href="#" id="reviews-cancel">Cancel</a>
+    </div>
+  </div>
 
   <!-- Beginning footer -->
   <footer id="footer">
