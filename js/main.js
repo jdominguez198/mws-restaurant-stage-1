@@ -174,6 +174,11 @@ createRestaurantHTML = (restaurant) => {
   more.href = DBHelper.urlForRestaurant(restaurant);
   inner.append(more);
 
+  const favorite = document.createElement('i');
+  favorite.className = 'icon icon-favorite' + (restaurant.is_favorite === "true" ? ' full' : '');
+  favorite.addEventListener('click', toggleFavoriteRestaurant);
+  inner.append(favorite);
+
   return li;
 };
 
@@ -189,4 +194,28 @@ addMarkersToMap = (restaurants = self.restaurants) => {
     });
     self.markers.push(marker);
   });
+};
+
+/**
+ * Toggle restaurant favorite
+ */
+toggleFavoriteRestaurant = (e) => {
+
+  const el = e.target;
+  const id = parseInt(el.parentNode.getAttribute('data-idx'));
+  if (el.className.indexOf('full') !== -1) {
+    DBHelper.markRestaurantAsFavorite(id, false, function(error, success) {
+      if (success) {
+          el.className = el.className.replace('full', '');
+      }
+    });
+  } else {
+
+      DBHelper.markRestaurantAsFavorite(id, true, function(error, success) {
+          if (success) {
+              el.className = el.className + ' full';
+          }
+      });
+  }
+
 };

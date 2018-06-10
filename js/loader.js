@@ -43,17 +43,9 @@ window.addEventListener('load', function() {
 
 });
 
-/*initMap
-const _worker = new Worker('/js/worker.js');
-_worker.addEventListener('message', function(e) {
-    console.log('Worker: ' + e.data);
-});
-_worker.postMessage('load');
-*/
-
 // Load service worker
 if ( 'serviceWorker' in navigator ) {
-    window.addEventListener('load', function() {
+    /*window.addEventListener('load', function() {
         navigator
             .serviceWorker
             .register('/sw.js', { scope: '/' })
@@ -63,5 +55,5 @@ if ( 'serviceWorker' in navigator ) {
             .catch(function (err) {
                 console.log('Service Worker Failed to Register', err);
             });
-    });
+    });*/
 }

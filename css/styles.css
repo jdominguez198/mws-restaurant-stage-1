@@ -223,14 +223,18 @@ nav h1 a {
   position: absolute;
 }
 #restaurant-name {
+  display: inline-block;
+  font-size: 18pt;
+  line-height: 60px;
+  margin: 0;
   color: #f18200;
   font-family: Arial,sans-serif;
-  font-size: 20pt;
+  /*font-size: 20pt;*/
   font-weight: 200;
   letter-spacing: 0;
-  margin: 15px 0 30px;
+  /*margin: 15px 0 30px;*/
   text-transform: uppercase;
-  line-height: 1.1;
+  /*line-height: 1.1;*/
 }
 #restaurant-img {
 	width: 100%;
@@ -320,6 +324,24 @@ nav h1 a {
 }
 #restaurant-hours td {
   color: #666;
+}
+
+/* ====================== Icon favorite ====================== */
+.icon {
+  display: block;
+  width: 50px;
+  height: 50px;
+  float: right;
+  margin: 5px 0;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.icon.icon-favorite {
+  background-image: url('../img/icons/favorite.svg');
+}
+.icon.icon-favorite.full {
+  background-image: url('../img/icons/favorite-full.svg');
 }
 
 /* ====================== Responsive ====================== */

@@ -184,14 +184,35 @@ class DBHelper {
    * Map marker for a restaurant.
    */
   static mapMarkerForRestaurant(restaurant, map) {
-    const marker = new google.maps.Marker({
+    return new google.maps.Marker({
       position: restaurant.latlng,
       title: restaurant.name,
       url: DBHelper.urlForRestaurant(restaurant),
       map: map,
       animation: google.maps.Animation.DROP}
     );
-    return marker;
+  }
+
+  static markRestaurantAsFavorite(restaurantID, isFavorite, callback) {
+
+      let xhr = new XMLHttpRequest();
+      xhr.open('PUT', DBHelper.DATABASE_URL + '/' + restaurantID + '/?is_favorite=' + (isFavorite ? 'true' : 'false'));
+      xhr.onload = () => {
+          if (xhr.status === 200) { // Got a success response from server!
+              window.idbKeyval.get(restaurantID).then((restaurant) => {
+                  console.log(restaurant);
+                  restaurant.is_favorite = "" + isFavorite; // set it as String
+                  window.idbKeyval.set(restaurantID, restaurant);
+              });
+
+              callback(null, true);
+          } else { // Oops!. Got an error from server.
+              const error = (`Request failed. Returned status of ${xhr.status}`);
+              callback(error, null);
+          }
+      };
+      xhr.send();
+
   }
 
 }

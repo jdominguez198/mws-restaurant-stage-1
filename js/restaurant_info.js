@@ -66,7 +66,15 @@ fetchRestaurantFromURL = (callback) => {
  */
 fillRestaurantHTML = (restaurant = self.restaurant) => {
   const name = document.getElementById('restaurant-name');
+  const icons = name.getElementsByTagName('i');
+  const icon = document.createElement('i');
+  icon.innerHTML = icons[0].innerHTML;
+  icon.className = 'icon icon-favorite' + (restaurant.is_favorite === "true" ? ' full' : '');
+  icon.addEventListener('click', toggleFavoriteRestaurant);
+
   name.innerHTML = restaurant.name;
+  name.setAttribute('data-idx', restaurant.id);
+  name.appendChild(icon);
 
   const address = document.getElementById('restaurant-address');
   address.innerHTML = restaurant.address;
@@ -194,4 +202,28 @@ getParameterByName = (name, url) => {
   if (!results[2])
     return '';
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
+};
+
+/**
+ * Toggle restaurant favorite
+ */
+toggleFavoriteRestaurant = (e) => {
+
+    const el = e.target;
+    const id = parseInt(el.parentNode.getAttribute('data-idx'));
+    if (el.className.indexOf('full') !== -1) {
+        DBHelper.markRestaurantAsFavorite(id, false, function(error, success) {
+            if (success) {
+                el.className = el.className.replace('full', '');
+            }
+        });
+    } else {
+
+        DBHelper.markRestaurantAsFavorite(id, true, function(error, success) {
+            if (success) {
+                el.className = el.className + ' full';
+            }
+        });
+    }
+
 };
