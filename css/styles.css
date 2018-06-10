@@ -214,8 +214,8 @@ nav h1 a {
   z-index: 1000;
 }
 .inside #map-container {
-  background: blue none repeat scroll 0 0;
   position: absolute;
+  background: blue none repeat scroll 0 0;
   height: 170px;
   right: 0;
   left: 0;
@@ -477,6 +477,9 @@ nav h1 a {
 @media all and (min-width: 1024px) { /* L */
   #restaurants-list li {
     width: 33.33%;
+  }
+  .inside #map-container {
+    position: fixed;
   }
 }
 @media all and (min-width: 1200px) { /* XL */

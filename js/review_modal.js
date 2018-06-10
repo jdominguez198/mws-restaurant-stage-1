@@ -62,7 +62,7 @@ const ReviewModal = function(restaurantID) {
         if (_instances.modalCancelBtn !== null) {
             _instances.modalCancelBtn.addEventListener('click', function(e) {
                 e.preventDefault();
-                _dismisModall();
+                _dismissModal();
             });
 
         }
@@ -122,7 +122,8 @@ const ReviewModal = function(restaurantID) {
                 _data.updatedAt = _data.createdAt;
                 ul.appendChild(createReviewHTML(_data));
             }
-            _dismisModall();
+            _clearModal();
+            _dismissModal();
 
         });
 
@@ -134,9 +135,18 @@ const ReviewModal = function(restaurantID) {
 
     };
 
-    const _dismisModall = function() {
+    const _dismissModal = function() {
 
         __removeClass(_instances.modalHolder, 'open');
+
+    };
+
+    const _clearModal = function() {
+
+        _instances.modalReviewName.value = '';
+        _instances.modalReviewRating.value = '';
+        _instances.modalReviewComments.value = '';
+        _checkSaveButtonAccessibility();
 
     };
 
