@@ -108,18 +108,18 @@ const ReviewModal = function(restaurantID) {
         ) { return;}
 
         const _data = {
-            'restaurant_id': _instances.modalReviewId.value,
+            'restaurant_id': parseInt(_instances.modalReviewId.value),
             'name': _instances.modalReviewName.value,
-            'rating': _instances.modalReviewRating.value,
+            'rating': parseInt(_instances.modalReviewRating.value),
             'comments': _instances.modalReviewComments.value,
         };
 
+        _data.createdAt = new Date().getTime();
+        _data.updatedAt = _data.createdAt;
         DBHelper.saveRestaurantReview(_data, function(error, success) {
 
             if (success) {
                 const ul = document.getElementById('reviews-list');
-                _data.createdAt = new Date();
-                _data.updatedAt = _data.createdAt;
                 ul.appendChild(createReviewHTML(_data));
             }
             _clearModal();
@@ -169,6 +169,12 @@ const ReviewModal = function(restaurantID) {
 
         // set restaurant id
         _instances.modalReviewId.value = id;
+
+    };
+
+    const _syncReviews = function() {
+
+
 
     };
 

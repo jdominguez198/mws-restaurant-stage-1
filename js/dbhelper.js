@@ -28,15 +28,15 @@ class DBHelper {
     // We have to check if we did a previous fetch will the data
     // and if so, do not fetch from network and provide the saved ones
 
-    window.idbKeyval.getAll().then(function(_restaurantsFromStorage) {
+    idbKeyval.getAll().then(function(_restaurantsFromStorage) {
         if (_restaurantsFromStorage.length && _restaurantsFromStorage.length > 0) {
 
-            console.log('Retrieving restaurants from indexedDB');
+            console.log('[App] Retrieving restaurants from indexedDB');
             callback(null, _restaurantsFromStorage);
 
         } else {
 
-            console.log('Retrieving restaurants from network');
+            console.log('[App] Retrieving restaurants from network');
             let xhr = new XMLHttpRequest();
             xhr.open('GET', DBHelper.API_RESTAURANTS_URL);
             xhr.onload = () => {
@@ -48,11 +48,11 @@ class DBHelper {
                     xhrReviews.onload = () => {
 
                         const restaurantsMap = {};
-                        window.idbKeyval.clear();
+                        idbKeyval.clear();
                         for (let i = 0; i < restaurants.length; i++) {
                             const restaurant = restaurants[i];
                             restaurantsMap[restaurant.id] = i;
-                            window.idbKeyval.set(restaurant.id, restaurant);
+                            idbKeyval.set(restaurant.id, restaurant);
                             if (typeof restaurant.photograph !== 'undefined') {
                                 fetch(`/img/${restaurant.photograph}.webp`);
                             }
@@ -67,7 +67,7 @@ class DBHelper {
                                 }
 
                                 restaurants[restaurantsMap[review.restaurant_id]].reviews.push(review);
-                                window.idbKeyval.set(review.restaurant_id, restaurants[restaurantsMap[review.restaurant_id]]);
+                                idbKeyval.set(review.restaurant_id, restaurants[restaurantsMap[review.restaurant_id]]);
 
                             }
                         }
@@ -235,10 +235,9 @@ class DBHelper {
       xhr.open('PUT', DBHelper.API_RESTAURANTS_URL + restaurantID + '/?is_favorite=' + (isFavorite ? 'true' : 'false'));
       xhr.onload = () => {
           if (xhr.status === 200) { // Got a success response from server!
-              window.idbKeyval.get(restaurantID).then((restaurant) => {
-                  console.log(restaurant);
+              idbKeyval.get(restaurantID).then((restaurant) => {
                   restaurant.is_favorite = "" + isFavorite; // set it as String
-                  window.idbKeyval.set(restaurantID, restaurant);
+                  idbKeyval.set(restaurantID, restaurant);
               });
               callback(null, true);
           } else { // Oops!. Got an error from server.
@@ -252,26 +251,42 @@ class DBHelper {
 
   static saveRestaurantReview(data, callback) {
 
-    let xhr = new XMLHttpRequest();
-      xhr.open('POST', DBHelper.API_REVIEWS_URL);
-      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-      xhr.onload = () => {
-          if (xhr.status === 201) {
-            const restaurantID = parseInt(data.restaurant_id);
-              window.idbKeyval.get(restaurantID).then((restaurant) => {
-                  if (!restaurant.reviews) {
-                    restaurant.reviews = [];
+      const key = Math.random().toString(36).substr(2, 5);
+      data._key = key;
+
+      try {
+
+          idbKeyval.setCollection(IDB_SYNCING_COLLECTION);
+          idbKeyval.set(key, data).then(() => {
+
+              if (window.swHelper !== null && window.appIsOnline) {
+                  console.log('[App] Review sent');
+                  if ('SyncManager' in window && window.swHelper !== null) {
+                      window.swHelper.sync.register('sync-reviews');
                   }
-                  restaurant.reviews.push(JSON.parse(xhr.responseText));
-                  window.idbKeyval.set(restaurantID, restaurant);
+              } else if (!window.appIsOnline) {
+                  console.log('[App] Review saved to sync when app back online');
+              }
+
+              const restaurantID = parseInt(data.restaurant_id);
+              idbKeyval.get(restaurantID).then((restaurant) => {
+                  if (!restaurant.reviews) {
+                      restaurant.reviews = [];
+                  }
+                  restaurant.reviews.push(data);
+                  idbKeyval.set(restaurantID, restaurant);
               });
+
               callback(null, true);
-          } else { // Oops!. Got an error from server.
-              const error = (`Request failed. Returned status of ${xhr.status}`);
-              callback(error, null);
-          }
-      };
-      xhr.send(serialize(data));
+              idbKeyval.setCollection(IDB_MAIN_COLLECTION);
+          });
+
+      } catch(err) {
+
+          const error = (`Saving failed. Returned exception ${err}`);
+          callback(error, null);
+
+      }
 
   }
 

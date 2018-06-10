@@ -49,16 +49,35 @@ window.addEventListener('load', function() {
 });
 
 // Load service worker
+window.swHelper = null;
 if ( 'serviceWorker' in navigator ) {
-    /*window.addEventListener('load', function() {
+
+    window.addEventListener('load', function() {
+
         navigator
             .serviceWorker
             .register('/sw.js', { scope: '/' })
             .then(function(registration) {
-                console.log('Service Worker registration successful with scope: ', registration.scope);
+                window.swHelper = registration;
+                console.log('[App] Service Worker registration successful with scope: ', registration.scope);
             })
             .catch(function (err) {
-                console.log('Service Worker Failed to Register', err);
+                console.log('[App] Service Worker Failed to Register', err);
             });
-    });*/
+
+    });
+
 }
+
+window.appIsOnline = true;
+window.addEventListener('online', function() {
+    console.log('[App] Network is now online');
+    window.appIsOnline = true;
+    if ('SyncManager' in window && window.swHelper !== null) {
+        window.swHelper.sync.register('sync-reviews');
+    }
+});
+window.addEventListener('offline', function() {
+    console.log('[App] Network is now offline');
+    window.appIsOnline = false;
+});

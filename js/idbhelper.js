@@ -1,52 +1,59 @@
 const _store = 'mws-store';
-const _collection = 'mws';
+
+const IDB_MAIN_COLLECTION = 'mws';
+const IDB_SYNCING_COLLECTION = 'mws-reviews-sync';
 
 const dbPromise = idb.open(_store, 1, upgradeDB => {
-    upgradeDB.createObjectStore(_collection);
+    upgradeDB.createObjectStore(IDB_MAIN_COLLECTION);
+    upgradeDB.createObjectStore(IDB_SYNCING_COLLECTION);
 });
 
-window.idbKeyval = {
+idbKeyval = {
+    currentCollection: IDB_MAIN_COLLECTION,
+    setCollection(collection) {
+        idbKeyval.currentCollection = collection;
+    },
     get(key) {
         return dbPromise.then(db => {
-            return db.transaction(_collection)
-                .objectStore(_collection).get(key);
+            return db.transaction(idbKeyval.currentCollection)
+                .objectStore(idbKeyval.currentCollection).get(key);
         });
     },
     getAll() {
         return dbPromise
             .then(function(db) {
                 return db
-                    .transaction(_collection, 'readonly')
-                    .objectStore(_collection)
+                    .transaction(idbKeyval.currentCollection, 'readonly')
+                    .objectStore(idbKeyval.currentCollection)
                     .getAll();
             });
     },
     set(key, val) {
         return dbPromise.then(db => {
-            const tx = db.transaction(_collection, 'readwrite');
-            tx.objectStore(_collection).put(val, key);
+            const tx = db.transaction(idbKeyval.currentCollection, 'readwrite');
+            tx.objectStore(idbKeyval.currentCollection).put(val, key);
             return tx.complete;
         });
     },
     delete(key) {
         return dbPromise.then(db => {
-            const tx = db.transaction(_collection, 'readwrite');
-            tx.objectStore(_collection).delete(key);
+            const tx = db.transaction(idbKeyval.currentCollection, 'readwrite');
+            tx.objectStore(idbKeyval.currentCollection).delete(key);
             return tx.complete;
         });
     },
     clear() {
         return dbPromise.then(db => {
-            const tx = db.transaction(_collection, 'readwrite');
-            tx.objectStore(_collection).clear();
+            const tx = db.transaction(idbKeyval.currentCollection, 'readwrite');
+            tx.objectStore(idbKeyval.currentCollection).clear();
             return tx.complete;
         });
     },
     keys() {
         return dbPromise.then(db => {
-            const tx = db.transaction(_collection);
+            const tx = db.transaction(idbKeyval.currentCollection);
             const keys = [];
-            const store = tx.objectStore(_collection);
+            const store = tx.objectStore(idbKeyval.currentCollection);
 
             // This would be store.getAllKeys(), but it isn't supported by Edge or Safari.
             // openKeyCursor isn't supported by Safari, so we fall back
@@ -60,3 +67,7 @@ window.idbKeyval = {
         });
     }
 };
+
+function getIDBInstance() {
+    return idbKeyval;
+}

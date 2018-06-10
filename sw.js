@@ -1,3 +1,7 @@
+importScripts('/js/idb/idb.js');
+importScripts('/js/idbhelper.js');
+importScripts('/js/dbhelper.js');
+
 const STATIC = 'static-v1';
 const DYNAMIC = 'dynamic-v1';
 
@@ -93,3 +97,48 @@ const tryCacheThenNetwork = function(masterRequest, masterResponse) {
     });
 
 };
+
+// Sync reviews with api
+const syncReviews = function() {
+
+    idbKeyval.setCollection(IDB_SYNCING_COLLECTION);
+    idbKeyval.getAll().then((pending2sync) => {
+        if (pending2sync.length && pending2sync.length > 0) {
+
+            console.log(`[Service Worker] There is ${pending2sync.length} reviews to sync. Sending data...`);
+            for (const review of pending2sync) {
+
+                fetch(DBHelper.API_REVIEWS_URL, {
+                    headers: { 'Content-type': 'application/x-www-form-urlencoded' },
+                    method: 'POST',
+                    body: serialize(review)
+                })
+                    .then(res => res.json())
+                    .then((itemSaved) => {
+
+                        if (itemSaved) {
+                            console.log('[Service Worker] Review pending to sync saved successfully');
+                            idbKeyval.delete(itemSaved._key);
+                        }
+
+                    }).catch((error) => {
+                    console.log(`Request failed. Returned ${error}`);
+                });
+
+            }
+
+        }
+
+        idbKeyval.setCollection(IDB_MAIN_COLLECTION);
+
+    });
+
+};
+
+// Background sync
+self.addEventListener('sync', function(event) {
+    if (event.tag === 'sync-reviews') {
+        console.log('[Service Worker] Looking for reviews to sync');
+        syncReviews();
+    }
+});
